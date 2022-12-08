@@ -12,9 +12,12 @@ Note: a^2 + b^2 = c^ Value: {{$id}}
     <th>C</th>
     <th>AVG</th>
   </tr>
-  <tr>
-    @foreach($json as $j)
-      <td>{{$j}}</td>
-    @endforeach
-  </tr>
+  @foreach($pt as $p)
+    <tr>
+      <td>{{$p->a}}</td>
+      <td>{{$p->b}}</td>
+      <td>{{$p->c}}</td>
+      <td>{{$p->avg}}</td>
+    </tr>
+  @endforeach
 </table>

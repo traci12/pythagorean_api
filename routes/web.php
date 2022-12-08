@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
+use App\Models\PythagoreanTbl;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,10 @@ use GuzzleHttp\Client;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // get api db
+    $pt = PythagoreanTbl::get();
+
+    return view('welcome', ['id' => 0 ,'pt' => $pt]);
 //     abort(404);
 });
 
@@ -31,11 +35,24 @@ Route::post('/', function (Request $request) {
             'Content-Type' => 'application/vnd.api+json',
             'Accept' => 'application/vnd.api+json',
             'Authorization' => 'Bearer 1|bpFDJkAfsyEt42JfESS6h3WbzXd0vECfoC8LtUBb',
-        ])->get('http://202.92.129.159/api/pythagorean/25');
+        ])->get('http://202.92.129.159/api/pythagorean/' . $id);
 
     // get response
     $json = $response->json();
 
-    return view('welcome', ["id" => $id, "json"=>$json]);
+    if($json) {
+      // store to db
+      $pt = new PythagoreanTbl;
+      $pt->a = $json['A'];
+      $pt->b = $json['B'];
+      $pt->c = $json['C'];
+      $pt->avg = $json['AVG'];
+      $pt->save();
+    }
+
+    // get api db
+    $pt = PythagoreanTbl::get();
+
+    return view('welcome', ["id" => $id, "pt"=>$pt]);
 //     abort(404);
 });
